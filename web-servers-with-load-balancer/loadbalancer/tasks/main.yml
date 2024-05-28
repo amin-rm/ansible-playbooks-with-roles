@@ -1,0 +1,23 @@
+- name: Install HAProxy
+  apt:
+    name: haproxy
+    state: present
+
+- name: Create backup of HAProxy configuration
+  command: cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.old
+
+- name: Render and copy HAProxy configuration
+  template:
+    src: templates/haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Start HAProxy service
+  service:
+    name: haproxy
+    state: started
+    enabled: yes
+
+- include_tasks: handlers/main.yml

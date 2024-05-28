@@ -1,0 +1,18 @@
+web_servers:
+  hosts:
+    webserver1:
+      ansible_host: 10.0.1.101
+    webserver2:
+      ansible_host: 10.0.1.102
+
+ssh_host:
+  hosts:
+    10.0.1.101:
+
+dns_server:
+  hosts:
+    10.0.1.101:
+
+load_balancer:
+  hosts:
+    10.0.1.103:

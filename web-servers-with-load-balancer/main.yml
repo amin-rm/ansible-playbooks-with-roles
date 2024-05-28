@@ -1,0 +1,15 @@
+---
+- name: Deploy web servers and load balancer
+  hosts: ssh_host
+  become: true
+  remote_user: amine-rm
+  become_method: sudo
+  gather_facts: no
+  vars:
+    ansible_ssh_pass: "22105139"
+    ansible_become_password: "22105139"
+
+  roles:
+    - webserver1
+    - webserver2
+    - loadbalancer

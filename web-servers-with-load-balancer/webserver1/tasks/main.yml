@@ -1,0 +1,39 @@
+---
+- name: Install Apache2
+  apt:
+    name: apache2
+    state: present
+
+- name: Create webserver1 directory
+  file:
+    path: "{{ webserver_dir }}"
+    state: directory
+    mode: 0755
+
+- name: Copy index.html with webserver name
+  template:
+    src: templates/index.html.j2
+    dest: "{{ webserver_dir }}/index.html"
+    owner: www-data
+    group: www-data
+    mode: 0644
+
+- name: Render and copy virtual host configuration
+  template:
+    src: templates/virtual_host.j2
+    dest: /etc/apache2/sites-available/{{ webserver_name }}.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Enable virtual host
+  become: true
+  become_user: root
+  become_method: sudo
+  shell: a2ensite {{ webserver_name }}.conf
+  args:
+    chdir: /etc/apache2/sites-available
+  notify:
+    - restart_apache
+
+- include_tasks: handlers/main.yml

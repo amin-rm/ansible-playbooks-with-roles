@@ -1,0 +1,8 @@
+frontend LB_Web
+  bind {{ bind_address }}:80
+  default_backend web-servers
+
+backend web-servers
+  balance roundrobin
+  server web1 {{ webserver1_ip }}:8080 check
+  server web2 {{ webserver2_ip }}:8080 check
