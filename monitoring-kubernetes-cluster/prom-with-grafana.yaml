@@ -1,0 +1,48 @@
+---
+- name: Install Grafana and Prometheus on Kubernetes Cluster
+  hosts: localhost # You can adjust it for your needs: This depends on the host of the kube client | You can also change it to one of the master node's hostname/IP
+  connection: local
+  gather_facts: false
+  vars:
+    kube_config_path: "/path/to/your/kubeconfig"
+    prometheus_chart_version: "15.5.3"
+    grafana_chart_version: "6.17.5"
+    namespace: "monitoring"
+    prometheus_release_name: "prometheus-release"
+    grafana_release_name: "grafana-release"
+
+  tasks:
+    - name: Ensure Helm is installed on the control machine
+      command: helm version --short
+      register: helm_installed
+      failed_when: helm_installed.stderr != '' and 'version' not in helm_installed.stdout
+
+    - name: Add Prometheus Helm repository
+      command: helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+    - name: Add Grafana Helm repository
+      command: helm repo add grafana https://grafana.github.io/helm-charts
+
+    - name: Update Helm repository to fetch the latest charts
+      command: helm repo update
+
+    - name: Install Prometheus chart
+      command: >
+        helm upgrade --install {{ prometheus_release_name }} prometheus-community/prometheus
+        --namespace {{ namespace }}
+        --create-namespace
+        --version {{ prometheus_chart_version }}
+        --set persistentVolume.enabled=false
+        --set server.persistentVolume.enabled=false
+        --kubeconfig {{ kube_config_path }}
+
+    - name: Install Grafana chart
+      command: >
+        helm upgrade --install {{ grafana_release_name }} grafana/grafana
+        --namespace {{ namespace }}
+        --create-namespace
+        --version {{ grafana_chart_version }}
+        --set persistence.enabled=false
+        --set adminPassword='ReplaceThisWithYourDesiredPassword'
+        --set service.type=LoadBalancer
+        --kubeconfig {{ kube_config_path }}

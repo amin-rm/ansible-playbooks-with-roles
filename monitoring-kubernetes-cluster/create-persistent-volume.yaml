@@ -1,0 +1,31 @@
+---
+- name: Create Persistent Volume for Prometheus
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    kube_config_path: "/path/to/your/kubeconfig"
+    pv_name: "prometheus-pv"
+    storage_size: "10Gi"
+    host_path: "/mnt/data"
+
+  tasks:
+    - name: Ensure kubectl is installed on the control machine
+      command: kubectl version --client
+      register: kubectl_installed
+      failed_when: kubectl_installed.stderr != '' and 'Client Version' not in kubectl_installed.stdout
+
+    - name: Create PV definition from template
+      template:
+        src: PV.j2
+        dest: /tmp/prometheus-pv.yaml
+
+    - name: Apply Persistent Volume using kubectl
+      command: kubectl apply -f /tmp/prometheus-pv.yaml --kubeconfig={{ kube_config_path }}
+      register: pv_apply
+      failed_when: pv_apply.stderr != ''
+
+    - name: Clean up PV definition file
+      file:
+        path: /tmp/prometheus-pv.yaml
+        state: absent
