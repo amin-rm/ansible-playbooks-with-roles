@@ -8,7 +8,7 @@ After bootstrapping, you will need to set the cluster using "kubeadm init [+ ext
 
 ## Supported OS
 
-- Ubuntu 18.04+ (Stable release recommended. eg: 22.04, 22.04 ...)
+- Ubuntu 18.04+ (Stable release recommended. eg: 20.04, 22.04 ...)
 
 ## Required Ansible
 Ansible version `2.10+`
