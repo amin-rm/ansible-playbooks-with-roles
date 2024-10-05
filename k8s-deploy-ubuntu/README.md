@@ -27,7 +27,8 @@ This role contains tasks to:
 - Clone the Project:
 
 ```bash
-$ git clone https://github.com/cloudspinx/k8s-bootstrap.git
+$ git clone https://github.com/amin-rm/ansible-playbooks-with-roles.git
+$ cd k8s-deploy-ubuntu
 ```
 
 - Configure `/etc/hosts` file in your bastion or workstation with all nodes and ip addresses. Example:
@@ -70,7 +71,7 @@ $ vi k8s-prep.yml
   #gather_facts: no
   vars:
     k8s_version: "1.29"                                  # Kubernetes version to be installed
-    timezone: "Africa/Nairobi"                           # Timezone to set on all nodes
+    timezone: "Africa/Tunisia"                           # Timezone to set on all nodes
     k8s_cni: calico                                      # calico, flannel
     container_runtime: cri-o                             # docker, cri-o, containerd 
     pod_network_cidr: "172.18.0.0/16"                    # pod subnet if using cri-o runtime
@@ -148,5 +149,3 @@ k8smaster01                : ok=23   changed=3    unreachable=0    failed=0    s
 k8snode01                  : ok=23   changed=3    unreachable=0    failed=0    skipped=11   rescued=0    ignored=0
 k8snode02                  : ok=23   changed=3    unreachable=0    failed=0    skipped=11   rescued=0    ignored=0
 ```
-
-Next check article on bootsrapping k8s control plane: https://computingforgeeks.com/how-to-install-kubernetes-on-ubuntu-complete-steps/
